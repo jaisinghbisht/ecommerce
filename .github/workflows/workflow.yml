@@ -6,6 +6,10 @@ on:
     branches: [ master ]
   pull_request:
 
+permissions:
+  checks: write
+  pull-requests: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
