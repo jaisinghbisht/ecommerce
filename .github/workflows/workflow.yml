@@ -5,8 +5,10 @@ on:
   push:
     branches: [ master ]
   pull_request:
+    branches: [ master ]
 
 permissions:
+  contents: read
   checks: write
   pull-requests: write
 
@@ -17,6 +19,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up JDK 17 and cache Maven deps
         uses: actions/setup-java@v4
