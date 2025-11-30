@@ -40,7 +40,7 @@ jobs:
         with:
           name: Unit tests
           path: '**/target/surefire-reports/TEST-*.xml'
-          reporter: junit
+          reporter: java-junit
 
       - name: Build Docker image (no push)
         uses: docker/build-push-action@v4
