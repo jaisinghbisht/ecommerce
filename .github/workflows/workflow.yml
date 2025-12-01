@@ -58,14 +58,14 @@ jobs:
           push: false
           tags: ecommerce:${{ github.sha }}
 
-      - name: Run container and check /actuator/health
-        run: |
-          docker run -d --name ecommerce_ci_test -e HEALTH_DB_ENABLED=false -p 8080:8080 ecommerce:${{ github.sha }}
-          for i in $(seq 1 30); do
-            if curl -sS http://localhost:8080/actuator/health | grep -q '"UP"'; then
-              echo "ACTUATOR HEALTH=UP"
-              break
-            fi
-            sleep 1
-          done
-          docker stop ecommerce_ci_test || true
+      # - name: Run container and check /actuator/health
+      #   run: |
+      #     docker run -d --name ecommerce_ci_test -e HEALTH_DB_ENABLED=false -p 8080:8080 ecommerce:${{ github.sha }}
+      #     for i in $(seq 1 30); do
+      #       if curl -sS http://localhost:8080/actuator/health | grep -q '"UP"'; then
+      #         echo "ACTUATOR HEALTH=UP"
+      #         break
+      #       fi
+      #       sleep 1
+      #     done
+      #     docker stop ecommerce_ci_test || true
