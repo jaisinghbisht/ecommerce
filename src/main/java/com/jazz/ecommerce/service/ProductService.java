@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.jazz.ecommerce.model.Product;
+import com.jazz.ecommerce.entity.Product;
 import com.jazz.ecommerce.repository.ProductRepository;
 
 import jakarta.transaction.Transactional;

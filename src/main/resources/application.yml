@@ -9,3 +9,10 @@ management:
   health:
     db:
       enabled: ${HEALTH_DB_ENABLED:true}
+
+application:
+  security:
+    jwt:
+      secret-key: "c3RhaXJzcnVzaHBhdHRlcm5leGFjdGNyb3BzaG91bGRzdHJlbmd0aGJyZWF0aGVub3c="
+      expiration-ms: 60000
+      refresh-expiration-ms: 600000

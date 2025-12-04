@@ -1,6 +1,5 @@
-package com.jazz.ecommerce.model;
+package com.jazz.ecommerce.entity;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 import jakarta.persistence.Column;
@@ -9,39 +8,37 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.DecimalMin;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Table(name = "products")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Product {
+public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, unique = true)
-	private String sku;
+	@Column(unique = true, nullable = false)
+	private String email;
 
 	@Column(nullable = false)
-	private String name;
+	@ToString.Exclude
+	private String password;
 
-	@Column
-	private String description;
+	@Column(nullable = false)
+	private String role;
 
-	@Column(nullable = false, precision = 12, scale = 2)
-	@DecimalMin(value = "0.01", message = "Price must be positive")
-	private BigDecimal price;
-
-	@Column(name = "created_at")
+	@Column(name = "created_at", nullable = false)
 	private OffsetDateTime createdAt;
+
 }

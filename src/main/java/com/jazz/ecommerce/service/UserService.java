@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.jazz.ecommerce.dto.UserMapper;
-import com.jazz.ecommerce.dto.UserResponseDTO;
-import com.jazz.ecommerce.model.User;
+import com.jazz.ecommerce.dto.UserResponse;
+import com.jazz.ecommerce.entity.User;
 import com.jazz.ecommerce.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -25,7 +25,7 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    public UserResponseDTO findUserByEmail(String email) {
+    public UserResponse findUserByEmail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, ("User with email " + email + " not found")));
         return userMapper.toResponseDTO(user);

@@ -1,6 +1,6 @@
 package com.jazz.ecommerce.controller;
 
-import com.jazz.ecommerce.model.Product;
+import com.jazz.ecommerce.entity.Product;
 import com.jazz.ecommerce.service.ProductService;
 
 import jakarta.validation.Valid;

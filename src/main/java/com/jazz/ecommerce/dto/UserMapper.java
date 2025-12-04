@@ -2,12 +2,12 @@ package com.jazz.ecommerce.dto;
 
 import org.springframework.stereotype.Component;
 
-import com.jazz.ecommerce.model.User;
+import com.jazz.ecommerce.entity.User;
 
 @Component
 public class UserMapper {
-    public UserResponseDTO toResponseDTO(User user) {
-        UserResponseDTO dto = new UserResponseDTO();
+    public UserResponse toResponseDTO(User user) {
+        UserResponse dto = new UserResponse();
         dto.setId(user.getId());
         dto.setEmail(user.getEmail());
         dto.setRole(user.getRole());
@@ -15,7 +15,7 @@ public class UserMapper {
         return dto;
     }
 
-    public User toEntity(UserRegistrationDTO dto) {
+    public User toEntity(UserRegistration dto) {
         User user = new User();
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
