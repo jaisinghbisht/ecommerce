@@ -1,4 +1,15 @@
-INSERT INTO users (email, password_hash, role, created_at)
+INSERT INTO
+    users (email, password, role, created_at)
 VALUES
-  ('user1@example.com', 'hashed_password1', 'USER', NOW()),
-  ('user2@example.com', 'hashed_password2', 'ADMIN', NOW());
+    (
+        'user1@example.com',
+        '$2a$12$TimGq6yvA2PwBNuklg89ReCJr6ZxzfmDbh7C12HF8LuP9jT5/vzL.',
+        'USER',
+        NOW ()
+    ),
+    (
+        'user2@example.com',
+        '$2a$12$tElfuzVV1Vhq5cKzWZ4qKeYalYpSiQnqq9u.wCIDW.2LxvQWQEr2e',
+        'ADMIN',
+        NOW ()
+    );
