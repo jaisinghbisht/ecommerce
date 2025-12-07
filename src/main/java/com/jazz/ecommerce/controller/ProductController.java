@@ -1,25 +1,12 @@
-/**
- * REST controller that exposes CRUD operations for managing products.
- *
- * <p>Endpoints include:
- * <ul>
- *     <li>GET /products/{id} – fetch a product by ID</li>
- *     <li>GET /products – list all products</li>
- *     <li>POST /products – create a new product</li>
- *     <li>PUT /products/{id} – update an existing product</li>
- *     <li>DELETE /products/{id} – remove a product</li>
- * </ul>
- *
- * <p>Validates incoming requests and delegates business logic to ProductService.
- */
-
 package com.jazz.ecommerce.controller;
 
+import com.jazz.ecommerce.dto.ProductMapper;
+import com.jazz.ecommerce.dto.ProductRequest;
+import com.jazz.ecommerce.dto.ProductResponse;
 import com.jazz.ecommerce.entity.Product;
 import com.jazz.ecommerce.service.ProductService;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import java.util.stream.Collectors;
 
 @RestController
 @Validated
@@ -37,36 +22,44 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductMapper mapper;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ProductMapper mapper) {
         this.productService = productService;
+        this.mapper = mapper;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> get(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getProductById(id));
+    public ResponseEntity<ProductResponse> get(@PathVariable Long id) {
+        Product product = productService.getProductById(id);
+        return ResponseEntity.ok(mapper.toResponse(product));
     }
 
     @GetMapping
-    public List<Product> list() {
-        return productService.getAllProducts();
+    public List<ProductResponse> list() {
+        return productService.getAllProducts()
+                .stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @PostMapping
-    public ResponseEntity<Product> create(@Valid @RequestBody Product p) {
-        Product newProduct = productService.createProduct(p);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
+    public ResponseEntity<ProductResponse> create(@Valid @RequestBody ProductRequest request) {
+        Product newProduct = productService.createProduct(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toResponse(newProduct));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable @NotNull(message = "ID cannot be null") Long id,
-            @Valid @RequestBody Product updatedProduct) {
-        Product product = productService.updateProduct(id, updatedProduct);
-        return ResponseEntity.ok(product);
+    public ResponseEntity<ProductResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductRequest request) {
+
+        Product updated = productService.updateProduct(id, request);
+        return ResponseEntity.ok(mapper.toResponse(updated));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable @NotNull(message = "ID cannot be null") Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }

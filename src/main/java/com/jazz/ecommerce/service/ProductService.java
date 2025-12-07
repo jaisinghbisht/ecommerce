@@ -1,12 +1,13 @@
 package com.jazz.ecommerce.service;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.jazz.ecommerce.api.exception.ConflictException;
+import com.jazz.ecommerce.api.exception.NotFoundException;
+import com.jazz.ecommerce.dto.ProductMapper;
+import com.jazz.ecommerce.dto.ProductRequest;
 import com.jazz.ecommerce.entity.Product;
 import com.jazz.ecommerce.repository.ProductRepository;
 
@@ -16,48 +17,51 @@ import jakarta.transaction.Transactional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductMapper mapper;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, ProductMapper mapper) {
         this.productRepository = productRepository;
+        this.mapper = mapper;
     }
 
     @Transactional
-    public Product createProduct(Product product) {
-        if (productRepository.findBySku(product.getSku()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Product with SKU " + product.getSku() + " already exists.");
+    public Product createProduct(ProductRequest request) {
+
+        if (productRepository.findBySku(request.getSku()).isPresent()) {
+            throw new ConflictException("Product with SKU " + request.getSku() + " already exists.");
         }
-        if (product.getCreatedAt() == null) {
-            product.setCreatedAt(OffsetDateTime.now());
-        }
+
+        Product product = mapper.toEntity(request);
         return productRepository.save(product);
+    }
+
+    public Product getProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Product with ID " + id + " not found"));
     }
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
-    public Product getProductById(Long id) {
-        return productRepository.findById(id)
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product with " + id + " not found"));
-    }
-
     @Transactional
-    public Product updateProduct(Long id, Product updatedProduct) {
-        return productRepository.findById(id).map(existingProduct -> {
-            existingProduct.setName(updatedProduct.getName());
-            existingProduct.setPrice(updatedProduct.getPrice());
-            existingProduct.setDescription(updatedProduct.getDescription());
-            return productRepository.save(existingProduct);
-        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product with " + id + " not found"));
+    public Product updateProduct(Long id, ProductRequest request) {
+
+        return productRepository.findById(id)
+                .map(existingProduct -> {
+                    mapper.updateEntity(existingProduct, request);
+                    return productRepository.save(existingProduct);
+                })
+                .orElseThrow(() -> new NotFoundException("Product with ID " + id + " not found"));
     }
 
     @Transactional
     public void deleteProduct(Long id) {
+
         if (!productRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product with " + id + " not found");
+            throw new NotFoundException("Product with ID " + id + " not found");
         }
+
         productRepository.deleteById(id);
     }
 }

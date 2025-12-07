@@ -44,6 +44,7 @@ public class ApplicationConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    @SuppressWarnings("deprecation")
     @Bean
     public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService,
             PasswordEncoder passwordEncoder) {
