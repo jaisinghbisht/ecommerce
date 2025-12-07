@@ -10,7 +10,7 @@
  * structured authentication responses.
  */
 
-package com.jazz.ecommerce.controller;
+package com.jazz.ecommerce.controller.v1;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ import com.jazz.ecommerce.service.AuthenticationService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -33,4 +33,10 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(authenticationService.login(request));
     }
+
+    @GetMapping("/ping")
+    public String ping() {
+        return "pong";
+    }
+
 }

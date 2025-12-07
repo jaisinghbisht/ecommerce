@@ -1,4 +1,4 @@
-package com.jazz.ecommerce.controller;
+package com.jazz.ecommerce.controller.v1;
 
 import com.jazz.ecommerce.dto.ProductMapper;
 import com.jazz.ecommerce.dto.ProductRequest;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @Validated
-@RequestMapping("/products")
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     private final ProductService productService;
