@@ -1,3 +1,15 @@
+/**
+ * JWT authentication filter that intercepts every HTTP request.
+ *
+ * Responsibilities:
+ * - Extract the JWT from the Authorization header.
+ * - Validate the token and extract the username.
+ * - Load the user details and set the authentication in the SecurityContext.
+ *
+ * This filter executes before UsernamePasswordAuthenticationFilter
+ * so that JWT authentication happens for every request to secured endpoints.
+ */
+
 package com.jazz.ecommerce.security;
 
 import lombok.RequiredArgsConstructor;

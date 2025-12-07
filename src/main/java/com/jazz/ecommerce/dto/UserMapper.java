@@ -1,3 +1,11 @@
+/**
+ * Maps between User entity and its corresponding DTO classes.
+ *
+ * Responsibilities:
+ * - Convert User entity into UserResponse for API output.
+ * - Convert UserRegistration request into a User entity.
+ */
+
 package com.jazz.ecommerce.dto;
 
 import org.springframework.stereotype.Component;

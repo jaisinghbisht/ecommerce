@@ -1,3 +1,8 @@
+/**
+ * Request payload for new user registration.
+ * Contains email and password fields with validation constraints.
+ */
+
 package com.jazz.ecommerce.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;

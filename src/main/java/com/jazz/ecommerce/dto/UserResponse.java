@@ -1,3 +1,7 @@
+/**
+ * Response DTO used to expose user information safely via the API.
+ */
+
 package com.jazz.ecommerce.dto;
 
 import java.time.OffsetDateTime;

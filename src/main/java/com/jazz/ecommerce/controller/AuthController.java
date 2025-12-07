@@ -1,3 +1,15 @@
+/**
+ * REST controller responsible for handling authentication-related endpoints.
+ *
+ * <p>Currently supports:
+ * <ul>
+ *     <li>/api/auth/login – authenticates a user and returns JWT tokens</li>
+ * </ul>
+ *
+ * <p>Delegates authentication logic to AuthenticationService and returns
+ * structured authentication responses.
+ */
+
 package com.jazz.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;

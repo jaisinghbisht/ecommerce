@@ -1,3 +1,17 @@
+/**
+ * Service responsible for generating and validating JWT tokens.
+ *
+ * <p>Responsibilities:
+ * <ul>
+ *     <li>Create JWT access tokens using HS256 signing algorithm.</li>
+ *     <li>Extract claims such as username and expiration time.</li>
+ *     <li>Validate token integrity and expiration.</li>
+ *     <li>Provide signing keys derived from Base64-encoded secret value.</li>
+ * </ul>
+ *
+ * <p>This class does not perform user authentication; it only handles JWT operations.
+ */
+
 package com.jazz.ecommerce.service;
 
 import io.jsonwebtoken.Claims;

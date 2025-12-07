@@ -1,3 +1,11 @@
+/**
+ * Error response structure for security-related failures such as:
+ * - 401 Unauthorized
+ * - 403 Forbidden
+ *
+ * Used by JwtAuthenticationEntryPoint and JwtAccessDeniedHandler.
+ */
+
 package com.jazz.ecommerce.dto;
 
 import lombok.Builder;
@@ -8,7 +16,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class ErrorResponse {
+public class SecurityErrorResponse {
     private OffsetDateTime timestamp;
     private int status;
     private String error;

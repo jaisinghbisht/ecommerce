@@ -1,3 +1,17 @@
+/**
+ * Service for creating and managing refresh tokens.
+ *
+ * <p>Responsibilities:
+ * <ul>
+ *     <li>Generate secure refresh tokens using SecureRandom.</li>
+ *     <li>Associate tokens with a user and store them in the database.</li>
+ *     <li>Set expiration time based on application configuration.</li>
+ *     <li>Verify whether a given refresh token has expired.</li>
+ * </ul>
+ *
+ * <p>Refresh tokens allow long-lived sessions and issuing new JWT access tokens.
+ */
+
 package com.jazz.ecommerce.service;
 
 import lombok.RequiredArgsConstructor;

@@ -1,99 +1,81 @@
 package com.jazz.ecommerce.exception;
 
-import com.jazz.ecommerce.dto.ErrorResponse;
-
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.security.SignatureException;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.validation.FieldError;
+import org.slf4j.MDC;
+import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.OffsetDateTime;
-import java.util.List;
+import com.jazz.ecommerce.api.exception.ConflictException;
+import com.jazz.ecommerce.api.exception.ForbiddenException;
+import com.jazz.ecommerce.api.exception.NotFoundException;
+import com.jazz.ecommerce.api.exception.UnauthorizedException;
+import com.jazz.ecommerce.api.response.ErrorResponse;
+
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	// Bad credentials (invalid username/password)
-	@ExceptionHandler(BadCredentialsException.class)
-	public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex, HttpServletRequest req) {
-		ErrorResponse err = baseError(HttpStatus.UNAUTHORIZED, "Invalid credentials", ex.getMessage(),
-				req.getRequestURI());
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
+	private String correlationId() {
+		return MDC.get("X-Correlation-Id");
 	}
 
-	// User not found
-	@ExceptionHandler(UsernameNotFoundException.class)
-	public ResponseEntity<ErrorResponse> handleUserNotFound(UsernameNotFoundException ex, HttpServletRequest req) {
-		ErrorResponse err = baseError(HttpStatus.UNAUTHORIZED, "User not found", ex.getMessage(), req.getRequestURI());
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
+	private ErrorResponse build(String code, String message) {
+		return ErrorResponse.builder()
+				.timestamp(LocalDateTime.now())
+				.errorCode(code)
+				.message(message)
+				.correlationId(correlationId())
+				.build();
 	}
 
-	// Token expired
-	@ExceptionHandler(ExpiredJwtException.class)
-	public ResponseEntity<ErrorResponse> handleExpiredJwt(ExpiredJwtException ex, HttpServletRequest req) {
-		ErrorResponse err = baseError(HttpStatus.UNAUTHORIZED, "Token expired", ex.getMessage(), req.getRequestURI());
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
-	}
-
-	// Signature or other jwt parsing errors
-	@ExceptionHandler({ SignatureException.class, JwtException.class })
-	public ResponseEntity<ErrorResponse> handleJwtParseExceptions(Exception ex, HttpServletRequest req) {
-		ErrorResponse err = baseError(HttpStatus.UNAUTHORIZED, "Invalid token", ex.getMessage(), req.getRequestURI());
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
-	}
-
-	// Access denied (user authenticated but not authorized)
-	@ExceptionHandler(AccessDeniedException.class)
-	public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex, HttpServletRequest req) {
-		ErrorResponse err = baseError(HttpStatus.FORBIDDEN, "Access denied", ex.getMessage(), req.getRequestURI());
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
-	}
-
-	// Validation errors (Bad request)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
-		List<String> details = ex.getBindingResult()
-				.getFieldErrors()
-				.stream()
-				.map((FieldError fe) -> fe.getField() + ": " + fe.getDefaultMessage())
+	public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
+		var details = ex.getBindingResult().getFieldErrors().stream()
+				.map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
 				.collect(Collectors.toList());
 
-		ErrorResponse err = ErrorResponse.builder()
-				.timestamp(OffsetDateTime.now())
-				.status(HttpStatus.BAD_REQUEST.value())
-				.error("Validation failed")
-				.message("Request validation failed")
-				.path(req.getRequestURI())
+		ErrorResponse error = ErrorResponse.builder()
+				.timestamp(LocalDateTime.now())
+				.errorCode("VALIDATION_ERROR")
+				.message("Invalid request")
 				.details(details)
+				.correlationId(correlationId())
 				.build();
 
-		return ResponseEntity.badRequest().body(err);
+		return ResponseEntity.badRequest().body(error);
+	}
+
+	@ExceptionHandler(UnauthorizedException.class)
+	public ResponseEntity<ErrorResponse> handleUnauthorized(UnauthorizedException ex) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+				.body(build("UNAUTHORIZED", ex.getMessage()));
+	}
+
+	@ExceptionHandler(ForbiddenException.class)
+	public ResponseEntity<ErrorResponse> handleForbidden(ForbiddenException ex) {
+		return ResponseEntity.status(HttpStatus.FORBIDDEN)
+				.body(build("FORBIDDEN", ex.getMessage()));
+	}
+
+	@ExceptionHandler(NotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(build("NOT_FOUND", ex.getMessage()));
+	}
+
+	@ExceptionHandler(ConflictException.class)
+	public ResponseEntity<ErrorResponse> handleConflict(ConflictException ex) {
+		return ResponseEntity.status(HttpStatus.CONFLICT)
+				.body(build("CONFLICT", ex.getMessage()));
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponse> handleAll(Exception ex, HttpServletRequest req) {
-		ErrorResponse err = baseError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", ex.getMessage(),
-				req.getRequestURI());
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err);
-	}
+	public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
+		ex.printStackTrace();
 
-	private ErrorResponse baseError(HttpStatus status, String shortError, String message, String path) {
-		return ErrorResponse.builder()
-				.timestamp(OffsetDateTime.now())
-				.status(status.value())
-				.error(shortError)
-				.message(message)
-				.path(path)
-				.build();
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(build("INTERNAL_ERROR", "Something went wrong"));
 	}
 }

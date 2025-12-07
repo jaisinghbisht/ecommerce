@@ -1,3 +1,15 @@
+/**
+ * Configures core authentication-related beans for the application.
+ *
+ * Responsibilities:
+ * - Provides a custom UserDetailsService that loads users from the database.
+ * - Registers a DaoAuthenticationProvider with a BCrypt password encoder.
+ * - Exposes AuthenticationManager for login authentication workflows.
+ *
+ * This class participates in Spring Security's authentication process
+ * but does NOT handle JWT validation. That is done by JwtAuthenticationFilter.
+ */
+
 package com.jazz.ecommerce.config;
 
 import lombok.RequiredArgsConstructor;

@@ -1,3 +1,8 @@
+/**
+ * Entity representing a refresh token for issuing new JWT access tokens.
+ * Each token is linked to a specific user and has an expiry time.
+ */
+
 package com.jazz.ecommerce.entity;
 
 import jakarta.persistence.*;

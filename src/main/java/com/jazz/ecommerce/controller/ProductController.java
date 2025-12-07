@@ -1,3 +1,18 @@
+/**
+ * REST controller that exposes CRUD operations for managing products.
+ *
+ * <p>Endpoints include:
+ * <ul>
+ *     <li>GET /products/{id} – fetch a product by ID</li>
+ *     <li>GET /products – list all products</li>
+ *     <li>POST /products – create a new product</li>
+ *     <li>PUT /products/{id} – update an existing product</li>
+ *     <li>DELETE /products/{id} – remove a product</li>
+ * </ul>
+ *
+ * <p>Validates incoming requests and delegates business logic to ProductService.
+ */
+
 package com.jazz.ecommerce.controller;
 
 import com.jazz.ecommerce.entity.Product;

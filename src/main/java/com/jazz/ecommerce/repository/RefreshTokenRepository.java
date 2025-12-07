@@ -1,3 +1,7 @@
+/**
+ * Repository for managing refresh tokens in the database.
+ */
+
 package com.jazz.ecommerce.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;

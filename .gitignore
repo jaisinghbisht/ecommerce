@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Quick Commands ###
+commands.txt
