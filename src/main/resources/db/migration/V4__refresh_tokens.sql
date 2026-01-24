@@ -1,6 +1,0 @@
-CREATE TABLE refresh_tokens (
-    id BIGSERIAL PRIMARY KEY,
-    token VARCHAR(200) UNIQUE NOT NULL,
-    expiry_date TIMESTAMPTZ NOT NULL,
-    user_id BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE
-);

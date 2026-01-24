@@ -1,15 +1,12 @@
-INSERT INTO
-    users (email, password, role, created_at)
+INSERT INTO users (email, password, role)
 VALUES
     (
         'user1@example.com',
-        '$2a$12$TimGq6yvA2PwBNuklg89ReCJr6ZxzfmDbh7C12HF8LuP9jT5/vzL.',
-        'USER',
-        NOW ()
+        '$2a$12$IaxCuqD4LH84hCCRbQbiVusueq4Pu3m0XX185PIV01nBvwcHVws1C',
+        'USER'
     ),
     (
-        'user2@example.com',
-        '$2a$12$tElfuzVV1Vhq5cKzWZ4qKeYalYpSiQnqq9u.wCIDW.2LxvQWQEr2e',
-        'ADMIN',
-        NOW ()
+        'admin@example.com',
+        '$2a$12$BlFLEyDyf3cvwJ2Ew6E9h.j9qAgTnA.qVz/AB7SaJ8P4BFZLs5bee',
+        'ADMIN'
     );
