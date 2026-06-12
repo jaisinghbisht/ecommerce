@@ -1,0 +1,5 @@
+application:
+  security:
+    jwt:
+      # This secret should be overridden by a true environment variable in production
+      secret-key: "c3RhaXJzcnVzaHBhdHRlcm5leGFjdGNyb3BzaG91bGRzdHJlbmd0aGJyZWF0aGVub3c="

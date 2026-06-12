@@ -1,0 +1,21 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+  health:
+    db:
+      enabled: ${HEALTH_DB_ENABLED:true}
+
+application:
+  security:
+    jwt:
+      secret-key: "${JWT_SECRET_KEY:c3RhaXJzcnVzaHBhdHRlcm5leGFjdGNyb3BzaG91bGRzdHJlbmd0aGJyZWF0aGVub3c=}" # Default for local dev
+      expiration-ms: 60000
+      refresh-expiration-ms: 600000
+
+cors:
+  allowed-origins: http://localhost:4200,http://localhost
