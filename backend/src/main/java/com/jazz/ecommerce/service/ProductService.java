@@ -1,5 +1,7 @@
 package com.jazz.ecommerce.service;
 
+import com.jazz.ecommerce.entity.Category;
+import com.jazz.ecommerce.repository.CategoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,10 +22,12 @@ import java.math.BigDecimal;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
     private final ProductMapper mapper;
 
-    public ProductService(ProductRepository productRepository, ProductMapper mapper) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, ProductMapper mapper) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
         this.mapper = mapper;
     }
 
@@ -33,6 +37,13 @@ public class ProductService {
             throw new ConflictException("Product with SKU " + request.getSku() + " already exists.");
         }
         Product product = mapper.toEntity(request);
+
+        if (request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new NotFoundException("Category with ID " + request.getCategoryId() + " not found"));
+            product.setCategory(category);
+        }
+
         return productRepository.save(product);
     }
 
@@ -62,6 +73,15 @@ public class ProductService {
         return productRepository.findById(id)
                 .map(existingProduct -> {
                     mapper.updateEntity(existingProduct, request);
+
+                    if (request.getCategoryId() != null) {
+                        Category category = categoryRepository.findById(request.getCategoryId())
+                                .orElseThrow(() -> new NotFoundException("Category with ID " + request.getCategoryId() + " not found"));
+                        existingProduct.setCategory(category);
+                    } else {
+                        existingProduct.setCategory(null);
+                    }
+
                     return productRepository.save(existingProduct);
                 })
                 .orElseThrow(() -> new NotFoundException("Product with ID " + id + " not found"));

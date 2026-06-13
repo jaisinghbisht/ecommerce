@@ -1,11 +1,31 @@
+# This file is activated by the @ActiveProfiles("test") annotation in tests.
+
 spring:
-  flyway:
-    enabled: false
+  # Defer datasource initialization until Testcontainers provides the properties.
+  # This prevents Spring from trying to auto-configure a datasource too early.
   jpa:
+    # This prevents Hibernate from trying to generate the schema itself.
+    # We rely exclusively on Flyway.
     hibernate:
-      ddl-auto: create-drop
-  datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ''
+      ddl-auto: none
+  sql:
+    init:
+      mode:
+
+logging:
+  level:
+    com.jazz.ecommerce: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql: WARN
+
+application:
+  security:
+    jwt:
+      # Use a fixed, non-production secret for repeatable tests
+      secret-key: "dGVzdC1zZWNyZXQta2V5LWZvci1lY29tbWVyY2UtYXBwbGljYXRpb24tZm9yLXRlc3Rpbmc="
+      expiration-ms: 3600000 # 1 hour for tests
+      refresh-expiration-ms: 7200000 # 2 hours for tests
+
+cors:
+  allowed-origins: http://localhost:8080

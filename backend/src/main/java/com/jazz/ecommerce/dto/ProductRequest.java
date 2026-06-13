@@ -30,4 +30,7 @@ public class ProductRequest {
     @NotNull(message = "Price is required")
     @DecimalMin(value = "0.01", message = "Price must be positive")
     private BigDecimal price;
+
+    @Schema(description = "ID of the category this product belongs to", example = "1")
+    private Long categoryId;
 }
