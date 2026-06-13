@@ -16,8 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ProductControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
-    @WithMockUser(authorities = "ADMIN") // Assuming an admin role is needed to create products
-    void shouldCreateProductSuccessfully() throws Exception {
+    @WithMockUser(authorities = "ADMIN")
+    void shouldCreateProductSuccessfullyWhenAdmin() throws Exception {
         // Arrange
         ProductRequest productRequest = new ProductRequest();
         productRequest.setSku("INT-TEST-SKU-001");
@@ -32,6 +32,22 @@ public class ProductControllerIntegrationTest extends BaseIntegrationTest {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.sku").value("INT-TEST-SKU-001"))
                 .andExpect(jsonPath("$.name").value("Integration Test Product"));
+    }
+
+    @Test
+    @WithMockUser(authorities = "USER")
+    void shouldReturnForbiddenWhenUserCreatesProduct() throws Exception {
+        // Arrange
+        ProductRequest productRequest = new ProductRequest();
+        productRequest.setSku("INT-TEST-SKU-002");
+        productRequest.setName("Integration Test Product 2");
+        productRequest.setPrice(new BigDecimal("19.99"));
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productRequest)))
+                .andExpect(status().isForbidden());
     }
 
     @Test

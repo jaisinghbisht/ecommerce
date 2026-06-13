@@ -15,7 +15,7 @@ public class CategoryControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @WithMockUser(authorities = "ADMIN")
-    void shouldCreateCategorySuccessfully() throws Exception {
+    void shouldCreateCategorySuccessfullyWhenAdmin() throws Exception {
         // Arrange
         CategoryRequest categoryRequest = new CategoryRequest();
         categoryRequest.setName("Integration Test Category");
@@ -28,5 +28,20 @@ public class CategoryControllerIntegrationTest extends BaseIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.name").value("Integration Test Category"));
+    }
+
+    @Test
+    @WithMockUser(authorities = "USER")
+    void shouldReturnForbiddenWhenUserCreatesCategory() throws Exception {
+        // Arrange
+        CategoryRequest categoryRequest = new CategoryRequest();
+        categoryRequest.setName("Integration Test Category 2");
+        categoryRequest.setDescription("A category for integration tests");
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(categoryRequest)))
+                .andExpect(status().isForbidden());
     }
 }
