@@ -1,0 +1,13 @@
+<form [formGroup]="searchForm" class="search-bar">
+  <div class="row g-3">
+    <div class="col-md-6">
+      <input type="text" formControlName="name" class="form-control" placeholder="Search by product name...">
+    </div>
+    <div class="col-md-3">
+      <input type="number" formControlName="minPrice" class="form-control" placeholder="Min price">
+    </div>
+    <div class="col-md-3">
+      <input type="number" formControlName="maxPrice" class="form-control" placeholder="Max price">
+    </div>
+  </div>
+</form>

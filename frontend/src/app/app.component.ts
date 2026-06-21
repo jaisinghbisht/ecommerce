@@ -1,20 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from './services/product.service';
+import { AuthService } from './features/auth/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
   title = 'ecommerce-frontend';
-  products: any;
 
-  constructor(private productService: ProductService) { }
+  constructor(
+    public authService: AuthService, // Made public to be accessible in template
+    private router: Router
+  ) {}
 
-  ngOnInit() {
-    this.productService.getProducts().subscribe(data => {
-      this.products = data.content;
-    });
+  ngOnInit(): void {
+    // No direct subscriptions needed here anymore, as template uses async pipe
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

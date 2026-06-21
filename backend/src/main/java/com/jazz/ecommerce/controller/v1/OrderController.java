@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Tag(name = "Order APIs", description = "APIs for managing customer orders")
 @SecurityRequirement(name = "bearerAuth")
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class OrderController {
 
     private final OrderService orderService;

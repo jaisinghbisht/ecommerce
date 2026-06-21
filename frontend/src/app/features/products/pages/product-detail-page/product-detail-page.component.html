@@ -1,0 +1,27 @@
+<div class="container mt-4">
+  <div *ngIf="product$ | async as product; else loading">
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+    <div *ngIf="product" class="card">
+      <div class="card-body">
+        <h1 class="card-title">{{ product.name }}</h1>
+        <h6 class="card-subtitle mb-2 text-muted">SKU: {{ product.sku }}</h6>
+        <p class="card-text">{{ product.description }}</p>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Price:</strong> {{ product.price | currency }}</li>
+          <li class="list-group-item"><strong>Category:</strong> {{ product.categoryName }}</li>
+          <li class="list-group-item"><strong>In Stock:</strong> {{ product.stock }}</li>
+          <li class="list-group-item"><strong>Added On:</strong> {{ product.createdAt | date:'longDate' }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <div class="d-flex justify-content-center mt-5">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </ng-template>
+</div>

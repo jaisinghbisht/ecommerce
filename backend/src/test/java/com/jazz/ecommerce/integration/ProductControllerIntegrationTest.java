@@ -4,19 +4,19 @@ import com.jazz.ecommerce.dto.ProductRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@Transactional
 public class ProductControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
-    @WithMockUser(authorities = "ADMIN")
+    @WithMockUser(roles = "ADMIN")
     void shouldCreateProductSuccessfullyWhenAdmin() throws Exception {
         // Arrange
         ProductRequest productRequest = new ProductRequest();
@@ -35,7 +35,7 @@ public class ProductControllerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    @WithMockUser(authorities = "USER")
+    @WithMockUser(roles = "USER")
     void shouldReturnForbiddenWhenUserCreatesProduct() throws Exception {
         // Arrange
         ProductRequest productRequest = new ProductRequest();

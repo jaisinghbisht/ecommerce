@@ -1,3 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ecommerce?options=-c%20timezone=Asia/Kolkata
+    username: admin
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate # Use 'validate' to check schema against entities
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
 management:
   endpoints:
     web:

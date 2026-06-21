@@ -27,7 +27,7 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/ecommerce_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/ecommerce_db?options=-c%20timezone=Asia/Kolkata
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=password
 

@@ -61,7 +61,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "409", description = "Category with name already exists")
     })
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
         Category newCategory = categoryService.createCategory(categoryRequest);
         return new ResponseEntity<>(toResponse(newCategory), HttpStatus.CREATED);
@@ -75,7 +75,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "409", description = "Category with name already exists")
     })
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryResponse> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryRequest categoryRequest) {
         Category updatedCategory = categoryService.updateCategory(id, categoryRequest);
         return ResponseEntity.ok(toResponse(updatedCategory));
@@ -87,7 +87,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "Category not found")
     })
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();

@@ -21,6 +21,8 @@ import com.jazz.ecommerce.entity.RefreshToken;
 import com.jazz.ecommerce.entity.User;
 import com.jazz.ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,31 +33,42 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-        private final AuthenticationManager authenticationManager;
-        private final JwtService jwtService;
-        private final UserRepository userRepository;
-        private final RefreshTokenService refreshTokenService;
-        private final UserDetailsService userDetailsService;
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
-        public AuthenticationResponse login(AuthenticationRequest request) {
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
+    private final RefreshTokenService refreshTokenService;
+    private final UserDetailsService userDetailsService;
 
-                authenticationManager.authenticate(
-                                new UsernamePasswordAuthenticationToken(
-                                                request.getEmail(),
-                                                request.getPassword()));
+    public AuthenticationResponse login(AuthenticationRequest request) {
+        logger.info("Attempting to authenticate user: {}", request.getEmail());
 
-                User user = userRepository.findByEmail(request.getEmail())
-                                .orElseThrow(() -> new IllegalStateException("User not found"));
-
-                UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-
-                String accessToken = jwtService.generateToken(userDetails);
-
-                RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
-
-                return AuthenticationResponse.builder()
-                                .token(accessToken)
-                                .refreshToken(refreshToken.getToken())
-                                .build();
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()));
+            logger.info("User {} authenticated successfully", request.getEmail());
+        } catch (Exception e) {
+            logger.error("Authentication failed for user {}: {}", request.getEmail(), e.getMessage());
+            throw e;
         }
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalStateException("User not found after authentication"));
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+
+        String accessToken = jwtService.generateToken(userDetails);
+        logger.info("Generated access token for user {}", request.getEmail());
+
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
+        logger.info("Generated refresh token for user {}", request.getEmail());
+
+        return AuthenticationResponse.builder()
+                .token(accessToken)
+                .refreshToken(refreshToken.getToken())
+                .build();
+    }
 }

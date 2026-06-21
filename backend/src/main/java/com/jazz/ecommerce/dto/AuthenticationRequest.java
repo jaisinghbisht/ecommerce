@@ -17,6 +17,5 @@ public class AuthenticationRequest {
 
     @Schema(description = "User's password", example = "password123", required = true)
     @NotBlank(message = "Password is required")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 }

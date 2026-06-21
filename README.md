@@ -1,118 +1,108 @@
-# Ecommerce Application
+# Full-Stack E-commerce Platform
 
-This is a full-stack e-commerce application built with Spring Boot and Angular. It provides a simple and easy-to-use platform for managing and selling products online.
+This project is a complete full-stack e-commerce application featuring a Spring Boot 3 backend and an Angular frontend.
 
-## Features
+## Project Structure
 
-*   **User Authentication:** Secure user authentication using JWT (JSON Web Tokens).
-*   **Product Management:** CRUD (Create, Read, Update, Delete) operations for products.
-*   **RESTful API:** A well-defined RESTful API for seamless communication between the frontend and backend.
-*   **Database Migrations:** Database schema management using Flyway.
-*   **Containerization:** Docker and Docker Compose support for easy setup and deployment.
+This project is a monorepo containing two main sub-projects:
 
-## Architecture
+-   `/backend`: The Spring Boot REST API.
+-   `/frontend`: The Angular single-page application (SPA).
 
-The application is divided into two main parts:
+---
 
-*   **Backend:** A Spring Boot application that provides the RESTful API. It's responsible for handling business logic, data persistence, and security.
-*   **Frontend:** An Angular application that provides the user interface. It communicates with the backend using the RESTful API.
+## Backend (Spring Boot)
 
-## Technologies Used
+A robust, stateless REST API built with Spring Boot.
 
-*   **Backend:**
-    *   Java 17
-    *   Spring Boot 3
-    *   Spring Web
-    *   Spring Data JPA
-    *   Spring Security
-    *   PostgreSQL
-    *   Flyway
-    *   Maven
-*   **Frontend:**
-    *   Angular 13
-    *   TypeScript
-    *   HTML/CSS
+### Features
 
-## Prerequisites
+-   **Authentication:** Secure JWT-based authentication with refresh tokens.
+-   **Authorization:** Enterprise-grade Role-Based Access Control (RBAC) using `@PreAuthorize`.
+-   **Database:** PostgreSQL with Flyway for automated schema migrations.
+-   **API Documentation:** Live API documentation available via Swagger UI.
+-   **Testing:** Comprehensive unit and integration tests using JUnit 5 and Testcontainers.
+-   **Containerization:** Docker-ready with a provided `Dockerfile`.
 
-*   Java 17
-*   Node.js and npm
-*   Angular CLI
-*   PostgreSQL
-*   Docker
-*   Docker Compose
+### Technology Stack
 
-## Getting Started
+-   Java 17
+-   Spring Boot 3
+-   Spring Security
+-   PostgreSQL
+-   Maven
+-   JWT
+-   Testcontainers
 
-### Without Docker
+### Prerequisites
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-username/ecommerce.git
-    cd ecommerce
+-   JDK 17 or later
+-   Maven 3.6 or later
+-   Docker (for running a local PostgreSQL instance)
+
+### How to Run the Backend
+
+1.  **Start the Database:**
+    The backend is configured to connect to a PostgreSQL database. The easiest way to run one is with Docker:
+    ```sh
+    docker run --name ecommerce-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=password -e POSTGRES_DB=ecommerce -p 5432:5432 -d postgres
     ```
-2.  **Configure the database:**
-    *   Make sure you have a PostgreSQL database running.
-    *   Open `backend/src/main/resources/application.properties` and update the following properties:
-        ```properties
-        spring.datasource.url=jdbc:postgresql://localhost:5432/your-database
-        spring.datasource.username=your-username
-        spring.datasource.password=your-password
-        ```
-3.  **Build and run the backend:**
-    ```bash
+
+2.  **Run the Application:**
+    Navigate to the `backend` directory and run the application using the Maven wrapper:
+    ```sh
     cd backend
-    ./mvnw clean install
     ./mvnw spring-boot:run
     ```
-    The backend will be running on `http://localhost:8080`.
-4.  **Build and run the frontend:**
-    *   Open a new terminal and navigate to the `frontend` directory:
-        ```bash
-        cd frontend
-        ```
-    *   Install the dependencies:
-        ```bash
-        npm install
-        ```
-    *   Start the Angular development server:
-        ```bash
-        ng serve
-        ```
-    The frontend will be running on `http://localhost:4200`.
 
-### With Docker
+3.  **Access the API:**
+    -   The API will be available at `http://localhost:8080`.
+    -   Swagger UI documentation can be accessed at `http://localhost:8080/swagger-ui.html`.
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-username/ecommerce.git
-    cd ecommerce
+---
+
+## Frontend (Angular)
+
+A modern, scalable single-page application built with Angular.
+
+### Features
+
+-   **Architecture:** Scalable feature-based module structure with lazy loading.
+-   **Core Services:** Centralized services for API communication, authentication, and storage.
+-   **Authentication:** Full login/logout flow integrated with the backend's JWT authentication.
+-   **Routing:** Protected routes using `AuthGuard` and `AdminGuard`.
+-   **Reactive UI:** Built with RxJS for a responsive and dynamic user experience.
+-   **Styling:** Styled with Bootstrap 5.
+
+### Technology Stack
+
+-   Angular
+-   TypeScript
+-   RxJS
+-   Bootstrap 5
+
+### Prerequisites
+
+-   Node.js (LTS version recommended)
+-   Angular CLI (`npm install -g @angular/cli`)
+
+### How to Run the Frontend
+
+1.  **Install Dependencies:**
+    Navigate to the `frontend` directory and install the required npm packages:
+    ```sh
+    cd frontend
+    npm install
     ```
-2.  **Start the application:**
-    ```bash
-    docker compose up -d
+
+2.  **Run the Development Server:**
+    Start the Angular development server. The `--open` flag will automatically open it in your default browser.
+    ```sh
+    ng serve --open
     ```
-    This will build the Docker images and start the application. The application will be available at `http://localhost:8080`.
 
-## How to check app health & logs
+3.  **Access the Application:**
+    -   The frontend will be available at `http://localhost:4200`.
+    -   The application will automatically proxy API requests to the backend running on `http://localhost:8080`.
 
-*   **Health endpoint (local / container):**
-    *   Ensure the app is running (e.g., `docker compose up -d`).
-    *   Query the actuator health endpoint:
-        ```bash
-        curl -sS http://localhost:8080/actuator/health
-        ```
-    *   Expect a JSON response containing `"status":"UP"`.
-*   **Container logs:**
-    *   Follow backend logs with compose: `docker compose logs -f backend`
-    *   Or for a single container: `docker logs -f <container_name>`
-
-## CI / Actions - interpreting failures
-
-If the CI run fails:
-
-*   Open the Actions tab for the failing workflow run and expand the failed job.
-*   Inspect the logs of the failing step (Maven build, test reporting, or Docker build). Maven test failures appear in the "Build and run tests" step.
-*   Test results are uploaded as an artifact named `surefire-reports` and published to the Checks via the JUnit reporter. Download the artifact to inspect detailed surefire XML and test output.
-*   Common fixes: fix failing unit tests, adjust memory/MAVEN_OPTS, or ensure that required services (e.g., DB) are mocked or available for CI tests.
-*   Persisting issues? Copy the failing step's logs and the surefire-reports artifact when opening an issue.
+---

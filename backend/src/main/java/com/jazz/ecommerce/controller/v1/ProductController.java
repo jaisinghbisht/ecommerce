@@ -70,7 +70,7 @@ public class ProductController {
             @ApiResponse(responseCode = "409", description = "Product with SKU already exists")
     })
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductResponse> create(@Valid @RequestBody ProductRequest request) {
         Product newProduct = productService.createProduct(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toResponse(newProduct));
@@ -83,7 +83,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Product not found")
     })
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductResponse> update(@PathVariable Long id, @Valid @RequestBody ProductRequest request) {
         Product updated = productService.updateProduct(id, request);
         return ResponseEntity.ok(mapper.toResponse(updated));
@@ -95,7 +95,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Product not found")
     })
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();

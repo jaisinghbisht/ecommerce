@@ -1,0 +1,19 @@
+.product-card {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-title {
+    color: #007bff;
+  }
+
+  .price {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #28a745;
+  }
+}

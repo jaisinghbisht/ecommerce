@@ -34,3 +34,7 @@ build/
 
 ### Quick Commands ###
 commands.txt
+
+### Custom ###
+/backend/src/test/java/com/jazz/ecommerce/service/TestPwd.java
+backend/tempjar/

@@ -9,7 +9,7 @@ VALUES
     ),
     (
         'admin@example.com',
-        '$2a$12$BlFLEyDyf3cvwJ2Ew6E9h.j9qAgTnA.qVz/AB7SaJ8P4BFZLs5bee',
+        '$2a$12$FM.9HtoPCnD9Lcf5P8QRxeu.LjNlpCjjwhaukZHAG.ccue.vdPSHu',
         'Admin',
         'User',
         'ADMIN'

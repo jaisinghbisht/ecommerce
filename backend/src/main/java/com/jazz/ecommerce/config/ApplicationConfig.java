@@ -3,7 +3,6 @@
  *
  * Responsibilities:
  * - Provides a custom UserDetailsService that loads users from the database.
- * - Registers a DaoAuthenticationProvider with a BCrypt password encoder.
  * - Exposes AuthenticationManager for login authentication workflows.
  *
  * This class participates in Spring Security's authentication process
@@ -12,6 +11,7 @@
 
 package com.jazz.ecommerce.config;
 
+import com.jazz.ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +25,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.jazz.ecommerce.repository.UserRepository;
-
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
@@ -39,18 +37,21 @@ public class ApplicationConfig {
                 .map(user -> User.builder()
                         .username(user.getEmail())
                         .password(user.getPassword())
-                        .authorities(user.getRole())
+                        .authorities("ROLE_" + user.getRole())
                         .build())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
-    @SuppressWarnings("deprecation")
     @Bean
-    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService,
+    public AuthenticationProvider authenticationProvider(
+            UserDetailsService userDetailsService,
             PasswordEncoder passwordEncoder) {
+
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder);
+
         provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+
         return provider;
     }
 

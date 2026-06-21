@@ -1,13 +1,25 @@
-# Use a slim JRE image for the runtime stage
+# ---------- Build Stage ----------
+FROM maven:3.9.8-eclipse-temurin-17 AS build
+
+WORKDIR /app
+
+COPY .mvn .mvn
+COPY mvnw .
+COPY pom.xml .
+
+RUN chmod +x mvnw && ./mvnw dependency:go-offline
+
+COPY src ./src
+
+RUN ./mvnw clean package -DskipTests
+
+# ---------- Runtime Stage ----------
 FROM eclipse-temurin:17-jre-jammy
 
 WORKDIR /app
 
-# Copy the pre-built JAR file from the target directory
-COPY target/ecommerce-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
-# Expose the port the app runs on
 EXPOSE 8080
 
-# Run the application
 ENTRYPOINT ["java","-jar","/app/app.jar"]
